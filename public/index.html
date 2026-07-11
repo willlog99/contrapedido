@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Contra Pedidos - LogLife 2026</title>
+  <link rel="icon" type="image/png" href="loglife_logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    :root {
+      --primary: #00AEEF;
+      --primary-dark: #0090C8;
+      --primary-darker: #00779E;
+      --primary-light: #E0F4FF;
+      --primary-subtle: #F0FAFF;
+      --accent-green: #10B981;
+      --accent-green-dark: #059669;
+      --accent-red: #EF4444;
+      --surface: #F7F9FC;
+      --card: #FFFFFF;
+      --border: #E2E8F0;
+      --border-light: #F1F5F9;
+      --text-primary: #0F172A;
+      --text-secondary: #64748B;
+      --text-muted: #94A3B8;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.06);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-full: 9999px;
+      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--surface);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ─────────────────────────────────────── */
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+    .header-brand { display: flex; align-items: center; gap: 12px; }
+    .header-brand img { height: 36px; width: 36px; }
+    .header-brand .brand-text { display: flex; flex-direction: column; }
+    .header-brand .brand-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+    .header-brand .brand-sub { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; letter-spacing: 0.02em; }
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-header {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: transparent; border: 1px solid var(--border); color: var(--text-secondary);
+      padding: 8px 16px; border-radius: var(--radius-sm); cursor: pointer;
+      font-size: 0.82rem; font-weight: 500; font-family: inherit; transition: all var(--transition);
+    }
+    .btn-header:hover { background: var(--surface); border-color: var(--primary); color: var(--primary); }
+    .btn-header.primary { background: var(--primary); border-color: var(--primary); color: white; }
+    .btn-header.primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+
+    /* ── Layout ─────────────────────────────────────── */
+    .container { max-width: 1280px; margin: 0 auto; padding: 24px 32px; }
+
+    /* ── Card ───────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .card-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-light);
+    }
+    .card-header-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      background: var(--primary-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .card-header h2 { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+    .card-header p { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Formulário ─────────────────────────────────── */
+    .search-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .search-row input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      transition: all var(--transition);
+      color: var(--text-primary);
+    }
+    .search-row input::placeholder { color: var(--text-muted); }
+    .search-row input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,174,239,0.1); }
+    .search-row button, .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      font-family: inherit;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .search-row button:hover, .btn:hover { background: var(--primary-dark); }
+    .btn-success { background: var(--accent-green); }
+    .btn-success:hover { background: var(--accent-green-dark); }
+    .btn-outline {
+      background: var(--card);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { background: var(--surface); border-color: var(--text-muted); }
+
+    /* ── Cliente info ──────────────────────────────── */
+    .client-info {
+      background: var(--primary-subtle);
+      border: 1px solid #B3E5FC;
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .client-info.show { display: block; }
+    .client-info-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .client-info-header .check-icon {
+      width: 20px; height: 20px; background: var(--accent-green); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;
+    }
+    .client-info-header h3 { font-size: 0.88rem; color: var(--primary-darker); font-weight: 600; }
+    .client-info .info-grid, .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 24px;
+      font-size: 0.84rem;
+    }
+    .info-grid .label { color: var(--text-muted); font-weight: 500; }
+    .info-grid .value { color: var(--text-primary); font-weight: 500; }
+
+    /* ── Seleção de duplicatas ─────────────────────── */
+    .duplicates-list {
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .duplicates-list.show { display: block; }
+    .duplicates-list h3 { color: #92400E; margin-bottom: 10px; font-size: 0.88rem; font-weight: 600; }
+    .dup-item {
+      padding: 10px 14px;
+      margin: 4px 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition);
+      font-size: 0.84rem;
+      background: var(--card);
+    }
+    .dup-item:hover { background: var(--primary-subtle); border-color: var(--primary); }
+
+    /* ── Form grid ─────────────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+    .form-group input, .form-group select {
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      transition: all var(--transition);
+      color: var(--text-primary);
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0,174,239,0.1);
+    }
+    .form-group input[readonly] { background: var(--surface); color: var(--text-secondary); }
+
+    .dia-badge {
+      display: inline-flex;
+      align-items: center;
+      background: var(--primary);
+      color: white;
+      padding: 2px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-left: 6px;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 4px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* ── Abas ───────────────────────────────────────── */
+    .tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 0;
+    }
+    .tab {
+      padding: 10px 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: all var(--transition);
+      font-family: inherit;
+      position: relative;
+    }
+    .tab:hover { color: var(--text-secondary); background: var(--surface); }
+    .tab.active {
+      color: var(--primary);
+      font-weight: 600;
+      background: var(--card);
+      z-index: 1;
+    }
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+    }
+    .tab .badge {
+      background: var(--surface);
+      color: var(--text-muted);
+      padding: 1px 7px;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      margin-left: 6px;
+      font-weight: 600;
+    }
+    .tab.active .badge { background: var(--primary-light); color: var(--primary); }
+
+    /* ── Tabela ─────────────────────────────────────── */
+    .table-card {
+      background: var(--card);
+      border-radius: 0 var(--radius) var(--radius) var(--radius);
+      border: 1px solid var(--border);
+      overflow: visible;
+      box-shadow: var(--shadow-sm);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    thead th {
+      background: var(--surface);
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    tbody td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-primary);
+    }
+    tbody tr { transition: background var(--transition); }
+    tbody tr:hover { background: var(--primary-subtle); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    .status-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .btn-icon {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 8px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      transition: all var(--transition);
+    }
+    .btn-icon:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+
+    /* ── Screenshot card (oculto) ───────────────────── */
+    .screenshot-card {
+      position: fixed;
+      left: -9999px;
+      top: 0;
+      width: 480px;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, sans-serif;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .screenshot-card .sc-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-darker));
+      color: white;
+      padding: 18px 24px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .screenshot-card .sc-body {
+      padding: 20px 24px;
+    }
+    .screenshot-card .sc-row {
+      display: flex;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 0.86rem;
+      align-items: center;
+    }
+    .screenshot-card .sc-row:last-child { border-bottom: none; }
+    .screenshot-card .sc-label {
+      width: 110px;
+      color: var(--text-muted);
+      font-weight: 500;
+      flex-shrink: 0;
+      font-size: 0.8rem;
+    }
+    .screenshot-card .sc-value {
+      color: var(--text-primary);
+      flex: 1;
+      font-weight: 500;
+    }
+    .screenshot-card .sc-status {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .sc-status-pendente { background: #FEF3C7; color: #92400E; }
+    .sc-status-coletado { background: #D1FAE5; color: #065F46; }
+    .sc-status-cancelado { background: #FEE2E2; color: #991B1B; }
+    .screenshot-card .sc-footer {
+      background: var(--surface);
+      padding: 12px 24px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-align: right;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .status-pendente { background: #FEF3C7; color: #92400E; }
+    .status-pendente::before { background: #F59E0B; }
+    .status-coletado { background: #D1FAE5; color: #065F46; }
+    .status-coletado::before { background: #10B981; }
+    .status-cancelado { background: #FEE2E2; color: #991B1B; }
+    .status-cancelado::before { background: #EF4444; }
+
+    /* ── Status dropdown ──────────────────────────── */
+    .status-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    .status-badge {
+      cursor: pointer;
+      user-select: none;
+    }
+    .status-badge:hover { filter: brightness(0.95); }
+    .status-dropdown {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 4px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 100;
+      min-width: 150px;
+      overflow: hidden;
+      display: none;
+    }
+    .status-dropdown.show { display: block; }
+    .status-option {
+      padding: 9px 14px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      color: var(--text-primary);
+    }
+    .status-option:hover { background: var(--surface); }
+    .status-option .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .dot-pendente { background: #F59E0B; }
+    .dot-coletado { background: #10B981; }
+    .dot-cancelado { background: #EF4444; }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .empty-state-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      opacity: 0.4;
+    }
+
+    /* ── Toast notification ─────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text-primary);
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-family: inherit;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #065F46; }
+    .toast.error { background: #991B1B; }
+
+    /* ── Responsivo ─────────────────────────────────── */
+    @media (max-width: 768px) {
+      header { padding: 0 16px; height: auto; flex-wrap: wrap; gap: 8px; }
+      .container { padding: 16px; }
+      .form-grid { grid-template-columns: 1fr 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+      .tabs { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-brand">
+      <img src="loglife_logo.png" alt="LogLife">
+      <div class="brand-text">
+        <span class="brand-title">Contra Pedido</span>
+        <span class="brand-sub">LOGLIFE &bull; 2026</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-header" onclick="window.location.href='base.html'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+        Base de Clientes
+      </button>
+      <button class="btn-header" onclick="exportarJson()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Exportar JSON
+      </button>
+      <button class="btn-header primary" onclick="downloadExcel()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Baixar Excel
+      </button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- ── Formulário de adição ─────────────────────── -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00AEEF" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div>
+          <h2>Novo Registro</h2>
+          <p>Busque pelo código Pardini ou sigla do cliente</p>
+        </div>
+      </div>
+
+      <div class="search-row">
+        <input type="text" id="searchCodigo" placeholder="Digite o código Pardini ou sigla do cliente..." autofocus>
+        <button onclick="buscarCodigo()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Buscar
+        </button>
+      </div>
+
+      <!-- Duplicatas -->
+      <div class="duplicates-list" id="duplicatesList">
+        <h3>⚠ Múltiplos resultados encontrados — selecione o cliente:</h3>
+        <div id="duplicatesContent"></div>
+      </div>
+
+      <!-- Info do cliente -->
+      <div class="client-info" id="clientInfo">
+        <div class="client-info-header">
+          <span class="check-icon">✓</span>
+          <h3>Cliente encontrado</h3>
+        </div>
+        <div class="info-grid">
+          <span class="label">Sigla</span> <span class="value" id="infoSigla"></span>
+          <span class="label">Cliente</span> <span class="value" id="infoCliente"></span>
+          <span class="label">Endereço</span> <span class="value" id="infoEndereco"></span>
+          <span class="label">Bairro</span> <span class="value" id="infoBairro"></span>
+          <span class="label">CEP</span> <span class="value" id="infoCep"></span>
+          <span class="label">Cidade</span> <span class="value" id="infoCidade"></span>
+        </div>
+      </div>
+
+      <!-- Campos adicionais -->
+      <div id="formFields" style="display:none;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Código</label>
+            <input type="text" id="fCodigo" readonly>
+          </div>
+          <div class="form-group">
+            <label>Cliente (Sigla)</label>
+            <input type="text" id="fCliente" readonly>
+          </div>
+          <div class="form-group">
+            <label>Responsável</label>
+            <input type="text" id="fResponsavel" placeholder="Nome do responsável">
+          </div>
+          <div class="form-group">
+            <label>Data <span id="diaBadge"></span></label>
+            <input type="text" id="fData" placeholder="DD/MM/AAAA" maxlength="10" oninput="onDataInput(this)">
+          </div>
+          <div class="form-group">
+            <label>Rota</label>
+            <input type="text" id="fRota" placeholder="Ex: SP08">
+          </div>
+          <div class="form-group">
+            <label>Horário</label>
+            <input type="text" id="fHorario" placeholder="HH:MM" maxlength="5" oninput="onHorarioInput(this)">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-outline" onclick="limparForm()">Limpar</button>
+          <button class="btn btn-success" onclick="salvarRegistro()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Salvar Registro
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 12px;">
+      <div class="card-header" style="margin-bottom: 12px; padding-bottom: 12px;">
+        <div class="card-header-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00AEEF" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        </div>
+        <div>
+          <h2>Filtros</h2>
+          <p>Filtrar registros por data e rota</p>
+        </div>
+      </div>
+
+      <!-- Indicador de filtro ativo -->
+      <div id="filtroAtivoIndicador" style="display: none; background: #DBEAFE; border: 1px solid #93C5FD; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.85rem; color: #0369A1;">
+        ✓ Filtro ativo — só aparecem registros que atendem <strong>todos</strong> os critérios preenchidos (data e rota).
+      </div>
+
+      <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr auto;">
+        <div class="form-group">
+          <label>Data Inicial</label>
+          <input type="text" id="filterDataInicio" placeholder="DD/MM/YYYY" maxlength="10" oninput="onFilterDataInput(this); aplicarFiltrosAutomatico()">
+        </div>
+        <div class="form-group">
+          <label>Data Final</label>
+          <input type="text" id="filterDataFim" placeholder="DD/MM/YYYY" maxlength="10" oninput="onFilterDataInput(this); aplicarFiltrosAutomatico()">
+        </div>
+        <div class="form-group">
+          <label>Rota</label>
+          <input type="text" id="filterRota" placeholder="Ex: SP08" oninput="aplicarFiltrosAutomatico()">
+        </div>
+        <div class="form-group" style="justify-content: flex-end; padding-top: 25px;">
+          <button class="btn btn-outline" onclick="limparFiltros()" style="margin-left: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Limpar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Tabelas por dia da semana ────────────────── -->
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-dia="SEGUNDA" onclick="switchTab('SEGUNDA')">SEG <span class="badge" id="badge-SEGUNDA">0</span></div>
+      <div class="tab" data-dia="TERCA" onclick="switchTab('TERCA')">TER <span class="badge" id="badge-TERCA">0</span></div>
+      <div class="tab" data-dia="QUARTA" onclick="switchTab('QUARTA')">QUA <span class="badge" id="badge-QUARTA">0</span></div>
+      <div class="tab" data-dia="QUINTA" onclick="switchTab('QUINTA')">QUI <span class="badge" id="badge-QUINTA">0</span></div>
+      <div class="tab" data-dia="SEXTA" onclick="switchTab('SEXTA')">SEX <span class="badge" id="badge-SEXTA">0</span></div>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Cliente</th>
+            <th>Endereço</th>
+            <th>Bairro</th>
+            <th>CEP</th>
+            <th>Cidade</th>
+            <th>Responsável</th>
+            <th>Data</th>
+            <th>Rota</th>
+            <th>Horário</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="12" class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            Nenhum registro ainda. Adicione um acima!
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Modal de Edição -->
+  <div id="editModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 500; align-items: center; justify-content: center;">
+    <div style="background: var(--card); border-radius: var(--radius); padding: 32px; width: 90%; max-width: 500px; box-shadow: var(--shadow-lg);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0; font-size: 1.1rem; font-weight: 600;">Editar Registro</h2>
+        <button onclick="fecharEdicao()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">✕</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
+        <div><label style="display: block; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;">Código</label><input type="text" id="editCodigo" readonly style="width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);"></div>
+        <div><label style="display: block; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;">Cliente</label><input type="text" id="editCliente" readonly style="width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);"></div>
+        <div style="grid-column: 1 / -1;"><label style="display: block; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;">Endereço</label><input type="text" id="editEndereco" readonly style="width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);"></div>
+        <div><label style="display: block; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;">Bairro</label><input type="text" id="editBairro" readonly style="width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);"></div>
+        <div><label style="display: block; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;">CEP</label><input type="text" id="editCep" readonly style="width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);"></div>
+        <div><label style="display: block; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;">Cidade</label><input type="text" id="editCidade" readonly style="width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);"></div>
+        <div style="grid-column: 1 / -1;"><label style="display: block; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;">Responsável *</label><input type="text" id="editResponsavel" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;" placeholder="Nome do responsável"></div>
+        <div><label style="display: block; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;">Data *</label><input type="text" id="editData" maxlength="10" oninput="onFilterDataInput(this)" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;" placeholder="DD/MM/YYYY"></div>
+        <div><label style="display: block; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;">Rota</label><input type="text" id="editRota" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;" placeholder="Ex: SP08"></div>
+        <div><label style="display: block; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;">Horário</label><input type="text" id="editHorario" maxlength="5" oninput="onHorarioInput(this)" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;" placeholder="HH:MM"></div>
+        <div><label style="display: block; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;">Status</label><select id="editStatus" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit;"><option value="pendente">Pendente</option><option value="coletado">Coletado</option><option value="cancelado">Cancelado</option></select></div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-light); padding-top: 16px;">
+        <button class="btn btn-outline" onclick="fecharEdicao()">Cancelar</button>
+        <button class="btn btn-success" onclick="salvarEdicao()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Salvar Alterações
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="api.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
