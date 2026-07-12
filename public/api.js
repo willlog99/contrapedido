@@ -1,11 +1,7 @@
 // =====================================================================
 // api.js — wrapper único de fetch pro Worker CP
 // =====================================================================
-// ⚠️  TROCAR pela URL real do Worker CP após o deploy no Cloudflare
-//     (Settings → Workers → seu-worker → "*.workers.dev" URL).
-//     Formato esperado: https://<nome>.<subdominio>.workers.dev
-//     (sem barra no final)
-const CP_WORKER_URL = 'https://CP_WORKER_URL';
+const CP_WORKER_URL = 'https://contrapedido.willlog99.workers.dev';
 
 async function call(method, path, body) {
   const opts = {
