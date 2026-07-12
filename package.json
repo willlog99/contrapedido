@@ -1,9 +1,0 @@
-{
-  "name": "automation-contrapedido",
-  "version": "2.0.0",
-  "description": "Contra Pedido LogLife — UI estática no GitHub Pages conversando com Worker CP no Cloudflare D1",
-  "private": true,
-  "scripts": {
-    "start": "npx http-server public -p 8080"
-  }
-}
