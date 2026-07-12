@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base de Clientes - LogLife 2026</title>
+  <link rel="icon" type="image/png" href="loglife_logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00AEEF;
+      --primary-dark: #0090C8;
+      --primary-darker: #00779E;
+      --primary-light: #E0F4FF;
+      --primary-subtle: #F0FAFF;
+      --accent-green: #10B981;
+      --accent-green-dark: #059669;
+      --accent-red: #EF4444;
+      --accent-red-dark: #DC2626;
+      --surface: #F7F9FC;
+      --card: #FFFFFF;
+      --border: #E2E8F0;
+      --border-light: #F1F5F9;
+      --text-primary: #0F172A;
+      --text-secondary: #64748B;
+      --text-muted: #94A3B8;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.06);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-full: 9999px;
+      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--surface);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ─────────────────────────────────────── */
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+    .header-brand { display: flex; align-items: center; gap: 12px; }
+    .header-brand img { height: 36px; width: 36px; }
+    .header-brand .brand-text { display: flex; flex-direction: column; }
+    .header-brand .brand-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+    .header-brand .brand-sub { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; letter-spacing: 0.02em; }
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-header {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: transparent; border: 1px solid var(--border); color: var(--text-secondary);
+      padding: 8px 16px; border-radius: var(--radius-sm); cursor: pointer;
+      font-size: 0.82rem; font-weight: 500; font-family: inherit; transition: all var(--transition);
+    }
+    .btn-header:hover { background: var(--surface); border-color: var(--primary); color: var(--primary); }
+    .btn-header.primary { background: var(--primary); border-color: var(--primary); color: white; }
+    .btn-header.primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+
+    /* ── Layout ─────────────────────────────────────── */
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px 32px; }
+
+    /* ── Card ───────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 0;
+      box-shadow: var(--shadow-sm);
+    }
+    /* ── Toolbar ────────────────────────────────────── */
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .toolbar input {
+      flex: 1;
+      min-width: 250px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      transition: all var(--transition);
+      color: var(--text-primary);
+    }
+    .toolbar input::placeholder { color: var(--text-muted); }
+    .toolbar input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,174,239,0.1); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      font-family: inherit;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .btn:hover { background: var(--primary-dark); }
+    .btn-success { background: var(--accent-green); }
+    .btn-success:hover { background: var(--accent-green-dark); }
+    .btn-danger { background: var(--accent-red); }
+    .btn-danger:hover { background: var(--accent-red-dark); }
+    .btn-outline {
+      background: var(--card);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { background: var(--surface); border-color: var(--text-muted); }
+    .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+
+    .counter {
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      margin-left: auto;
+      font-weight: 500;
+    }
+
+    /* ── Tabela ─────────────────────────────────────── */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      min-width: 1100px;
+    }
+    thead th {
+      background: var(--surface);
+      padding: 12px 10px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    tbody td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-primary);
+    }
+    tbody tr { transition: background var(--transition); }
+    tbody tr:hover { background: var(--primary-subtle); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .modelo-fixo { background: var(--primary-light); color: var(--primary-darker); padding: 2px 8px; border-radius: var(--radius-full); font-size: 0.72rem; font-weight: 600; }
+    .modelo-cp { background: #FEF3C7; color: #92400E; padding: 2px 8px; border-radius: var(--radius-full); font-size: 0.72rem; font-weight: 600; }
+
+    .actions-cell { white-space: nowrap; display: flex; gap: 4px; }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── Modal ──────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px;
+      width: 580px;
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+    .modal h3 {
+      font-size: 1rem;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+      font-weight: 600;
+    }
+    .modal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .modal-grid .full { grid-column: 1 / -1; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+    .form-group input, .form-group select {
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      transition: all var(--transition);
+      color: var(--text-primary);
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0,174,239,0.1);
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* ── Toast ──────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text-primary);
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-family: inherit;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 2000;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #065F46; }
+    .toast.error { background: #991B1B; }
+
+    /* ── Confirm dialog ────────────────────────────── */
+    .confirm-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      z-index: 1500;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    .confirm-overlay.show { display: flex; }
+    .confirm-box {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px;
+      width: 380px;
+      max-width: 90vw;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .confirm-box p { margin-bottom: 20px; font-size: 0.92rem; color: var(--text-secondary); }
+    .confirm-box .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+
+    @media (max-width: 768px) {
+      header { padding: 0 16px; height: auto; flex-wrap: wrap; gap: 8px; }
+      .container { padding: 16px; }
+      .modal-grid { grid-template-columns: 1fr; }
+      .toolbar { flex-direction: column; }
+      .counter { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-brand">
+      <img src="loglife_logo.png" alt="LogLife">
+      <div class="brand-text">
+        <span class="brand-title">Base de Clientes</span>
+        <span class="brand-sub">LOGLIFE &bull; 2026</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-header" onclick="window.location.href='/'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar ao Contra Pedido
+      </button>
+      <button class="btn-header primary" onclick="openAddModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Novo Cliente
+      </button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <div class="toolbar">
+        <input type="text" id="searchInput" placeholder="Buscar por sigla, código, cliente ou cidade..." oninput="onSearch()">
+        <span class="counter" id="counter">Carregando...</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Sigla</th>
+              <th>Código</th>
+              <th>Cliente</th>
+              <th>Endereço</th>
+              <th>Complem.</th>
+              <th>Bairro</th>
+              <th>CEP</th>
+              <th>Cidade</th>
+              <th>UF</th>
+              <th>Modelo</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr><td colspan="11" class="empty-state">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de edição/adição -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h3 id="modalTitle">Editar Cliente</h3>
+      <div class="modal-grid">
+        <div class="form-group">
+          <label>Sigla Fleury</label>
+          <input type="text" id="mSigla" placeholder="Ex: ALPHAVIEW-FL">
+        </div>
+        <div class="form-group">
+          <label>Código Pardini</label>
+          <input type="text" id="mCodigo" placeholder="Ex: 16406">
+        </div>
+        <div class="form-group full">
+          <label>Cliente</label>
+          <input type="text" id="mCliente" placeholder="Nome do cliente">
+        </div>
+        <div class="form-group full">
+          <label>Endereço</label>
+          <input type="text" id="mEndereco" placeholder="Rua, número">
+        </div>
+        <div class="form-group">
+          <label>Complemento</label>
+          <input type="text" id="mComplem" placeholder="Sala, andar, etc.">
+        </div>
+        <div class="form-group">
+          <label>Bairro</label>
+          <input type="text" id="mBairro" placeholder="Bairro">
+        </div>
+        <div class="form-group">
+          <label>CEP</label>
+          <input type="text" id="mCep" placeholder="00000-000" maxlength="9" oninput="onCepInput(this)">
+        </div>
+        <div class="form-group">
+          <label>Cidade</label>
+          <input type="text" id="mCidade" placeholder="Cidade">
+        </div>
+        <div class="form-group">
+          <label>UF</label>
+          <input type="text" id="mUf" placeholder="SP" maxlength="2" style="text-transform:uppercase;">
+        </div>
+        <div class="form-group">
+          <label>Modelo de Atendimento</label>
+          <select id="mModelo">
+            <option value="CONTRA PEDIDO">CONTRA PEDIDO</option>
+            <option value="FIXO">FIXO</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-success" id="modalSaveBtn" onclick="saveModal()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm dialog -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box">
+      <p id="confirmText">Tem certeza?</p>
+      <div class="confirm-actions">
+        <button class="btn btn-outline" onclick="closeConfirm()">Cancelar</button>
+        <button class="btn btn-danger" id="confirmBtn" onclick="confirmAction()">Remover</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="api.js"></script>
+  <script src="base.js"></script>
+
+</body>
+</html>
